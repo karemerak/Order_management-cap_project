@@ -1,0 +1,32 @@
+{
+  "xsappname": "order-management-system",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.User",
+      "description": "User access"
+    },
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Admin access"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "User",
+      "description": "Create and manage orders",
+      "scope-references": [
+        "$XSAPPNAME.User"
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Full system access",
+      "scope-references": [
+        "$XSAPPNAME.User",
+        "$XSAPPNAME.Admin"
+      ]
+    }
+  ],
+ "attributes": []
+}

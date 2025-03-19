@@ -1,4 +1,4 @@
-namespace com.orderms;
+namespace orderms;
 
 using { Currency, managed, cuid } from '@sap/cds/common';
 
@@ -21,7 +21,7 @@ entity Products : cuid, managed {
 entity Customers : cuid, managed {
   firstName   : String(50);
   lastName    : String(50);
-  email       : String(100);
+  email       : String(100) @unique;
   phone       : String(20);
   address     : String(200);
   city        : String(100);
@@ -29,20 +29,32 @@ entity Customers : cuid, managed {
   orders      : Association to many Orders on orders.customer = $self;
 }
 
+// Entity for an Order
+@odata.draft.enabled
+@odata.draft.bypass
 entity Orders : cuid, managed {
-  customer    : Association to Customers;
-  orderDate   : DateTime @cds.on.insert: $now;
-  status      : String(20) enum {
-    new;
-    processing;
-    shipped;
-    delivered;
-    cancelled;
-  } default 'new';
-  items       : Composition of many OrderItems on items.order = $self;
-  totalAmount : Decimal(9,2);
-  currency    : Currency;
-  notes       : String(1000);
+    customer     : Association to Customers;
+    orderDate    : Date default $now;
+    status       : String(20) enum {
+        NEW;
+        PROCESSING;
+        SHIPPED;
+        DELIVERED;
+        CANCELLED;
+    } default 'NEW';
+    totalAmount  : Decimal(15, 2);
+    currency     : String(3);
+    shippingAddress : String(1000);
+    items        : Composition of many OrderItems on items.order = $self;
+    
+    @Core.Computed : true
+    totalOrders : Integer;
+    @Core.Computed : true
+    averageOrderAmount : Decimal(15,2);
+    @Core.Computed : true
+    monthlyOrdersCount : Integer;
+    @Core.Computed : true
+    monthlyRevenue : Decimal(15,2);
 }
 
 entity OrderItems : cuid {

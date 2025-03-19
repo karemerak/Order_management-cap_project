@@ -1,12 +1,12 @@
 import { Service } from '@sap/cds';
 
-export default function ordersService(this: Service) {
-    const { Orders, OrderItems } = this.entities;
+export default function ordersService(srv: Service) {
+    const { Orders, Products, OrderItems } = srv.entities;
 
     // Add order-specific handlers here
-    this.on('calculateOrderTotal', async (req: any) => {
+    srv.on('calculateOrderTotal', async (req: any) => {
         const orderId = req.data.orderId;
-        return calculateOrderTotal.call(this, orderId);
+        return calculateOrderTotal.call(srv, orderId);
     });
 
     // Helper function to calculate order total
@@ -26,5 +26,5 @@ export default function ordersService(this: Service) {
     }
 
     // Make calculateOrderTotal available to other services
-    (this as any).calculateOrderTotal = calculateOrderTotal;
+    (srv as any).calculateOrderTotal = calculateOrderTotal;
 } 

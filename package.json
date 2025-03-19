@@ -10,7 +10,9 @@
     "express": "^4",
     "@sap/cds-dk": "^7",
     "@sap/xssec": "^3",
-    "passport": "^0"
+    "passport": "^0",
+    "@sap/hana-client": "^2",
+    "@sap/xsenv": "^3"
   },
   "devDependencies": {
     "@types/node": "^14",
@@ -34,8 +36,24 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sqlite"
+        "kind": "sqlite",
+        "model": "db/schema.cds"                                        
+      },
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "alice": {
+            "roles": [
+              "Admin"
+            ]
+          },
+          "bob": {
+            "roles": [
+              "User"
+            ]
+          }
+        }
       }
     }
   }
-} 
+}

@@ -1,12 +1,128 @@
-using { com.orderms as db } from '../db/schema';
+using orderms from '../db/schema';
 
 service OrderManagementService @(path: '/odata/v4/order-management') {
-    entity Products as projection on db.Products;
-    entity Customers as projection on db.Customers;
-    entity Orders as projection on db.Orders;
-    entity OrderItems as projection on db.OrderItems;
+    annotate Customers with @restrict :
+    [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
 
-    // Custom actions
-    action validateStock(productId: UUID, quantity: Integer) returns Boolean;
-    action calculateOrderTotal(orderId: UUID) returns Decimal(9,2);
+    annotate OrderItems with @restrict :
+    [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
+
+    annotate Orders with @restrict :
+    [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
+
+    annotate Orders with @Aggregation.ApplySupported : 
+    {
+        $Type : 'Aggregation.ApplySupportedType',
+        GroupableProperties :
+        [
+            totalAmount,
+            totalOrders,
+            monthlyRevenue
+        ],
+        AggregatableProperties :
+        [
+            {
+                Property : totalAmount,
+                SupportedAggregationMethods :
+                [
+                    'average'
+                ]
+            }
+        ]
+    };
+
+    annotate Products with @restrict :
+    [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ' ], to : [ 'User' ] }
+    ];
+
+    entity Products as
+        projection on orderms.Products;
+
+    entity Orders as
+        projection on orderms.Orders;
+
+    entity OrderItems as
+        projection on orderms.OrderItems;
+
+    entity Customers as
+        projection on orderms.Customers;
+
+    @restrict :
+    [
+        {
+            grant :
+            [
+                '*'
+            ],
+            to :
+            [
+                'User'
+            ]
+        }
+    ]
+    action cancelOrder
+    (
+        orderId : UUID
+    )
+    returns Boolean;
+
+    @restrict :
+    [
+        {
+            grant :
+            [
+                '*'
+            ],
+            to :
+            [
+                'User'
+            ]
+        }
+    ]
+    action submitOrder
+    (
+        orderId : UUID
+    )
+    returns Boolean;
+
+    @restrict :
+    [
+        {
+            grant :
+            [
+                '*'
+            ],
+            to :
+            [
+                'Admin'
+            ]
+        }
+    ]
+    action acceptOrder
+    (
+        orderId : UUID
+    )
+    returns Boolean;
+
+    @readonly
+    entity OrderKPIs
+    {
+        key ID : UUID;
+        totalOrders : Integer;
+        totalRevenue : Decimal(15,2);
+        averageOrderValue : Decimal(15,2);
+        status : String;
+        month : Date;
+    }
 } 

@@ -13,8 +13,8 @@ module.exports = cds.service.impl(async function (this: Service) {
   const { Products, Orders, OrderItems, Customers } = this.entities as any;
 
   // Import and use the handlers from the handlers folder
-  productsService.call(this);
-  ordersService.call(this);
-  orderItemsService.call(this);
-  customersService.call(this);
+  productsService(this);
+  ordersService(this);      
+  orderItemsService(this);
+  customersService(this);
 }); 
