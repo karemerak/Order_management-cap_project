@@ -18,6 +18,7 @@ export type Product = {
   stockQuantity: number;
   status?: string;
   supplier?: string;
+  imageUrl?: string;
 };
 
 export type Order = {
@@ -28,11 +29,20 @@ export type Order = {
   totalAmount?: number;
   currency?: string;
   shippingAddress?: string;
-  items: Array<{ product_ID: string; quantity: number; unitPrice?: number; totalPrice?: number }>;
+  items: Array<{ 
+    product_ID: string; 
+    quantity: number; 
+    unitPrice?: number; 
+    totalPrice?: number;
+    currency?: string;
+  }>;
   totalOrders?: number; 
   averageOrderAmount?: number; 
   monthlyOrdersCount?: number; 
   monthlyRevenue?: number;
+  IsActiveEntity?: boolean;
+  HasActiveEntity?: boolean;
+  HasDraftEntity?: boolean;
 };
 
 export type orderId = number;

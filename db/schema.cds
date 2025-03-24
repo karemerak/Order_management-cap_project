@@ -3,7 +3,7 @@ namespace orderms;
 using { Currency, managed, cuid } from '@sap/cds/common';
 
 entity Products : cuid, managed {
-  name        : String(100) @title: 'Product Name';
+  name        : String(100) @title: 'Product Name' @unique;
   description : String(1000);
   price       : Decimal(9,2);
   currency    : Currency;

@@ -4,7 +4,6 @@ import productsService from './handlers/products-service';
 import ordersService from './handlers/orders-service';
 import orderItemsService from './handlers/order-items-service';
 import customersService from './handlers/customers-service';
-
 /**
  * Order Management Service
  * @module orderManagementService

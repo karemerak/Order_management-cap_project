@@ -1,53 +1,11 @@
 using orderms from '../db/schema';
 
 service OrderManagementService @(path: '/odata/v4/order-management') {
-    annotate Customers with @restrict :
-    [
-        { grant : [ '*' ], to : [ 'Admin' ] },
-        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
-    ];
-
-    annotate OrderItems with @restrict :
-    [
-        { grant : [ '*' ], to : [ 'Admin' ] },
-        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
-    ];
-
-    annotate Orders with @restrict :
-    [
-        { grant : [ '*' ], to : [ 'Admin' ] },
-        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
-    ];
-
-    annotate Orders with @Aggregation.ApplySupported : 
-    {
-        $Type : 'Aggregation.ApplySupportedType',
-        GroupableProperties :
-        [
-            totalAmount,
-            totalOrders,
-            monthlyRevenue
-        ],
-        AggregatableProperties :
-        [
-            {
-                Property : totalAmount,
-                SupportedAggregationMethods :
-                [
-                    'average'
-                ]
-            }
-        ]
-    };
-
-    annotate Products with @restrict :
-    [
-        { grant : [ '*' ], to : [ 'Admin' ] },
-        { grant : [ 'READ' ], to : [ 'User' ] }
-    ];
-
     entity Products as
         projection on orderms.Products;
+
+    entity Customers as
+        projection on orderms.Customers;
 
     entity Orders as
         projection on orderms.Orders;
@@ -55,21 +13,45 @@ service OrderManagementService @(path: '/odata/v4/order-management') {
     entity OrderItems as
         projection on orderms.OrderItems;
 
-    entity Customers as
-        projection on orderms.Customers;
+    annotate Products with @restrict : [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ' ], to : [ 'User' ] }
+    ];
 
-    @restrict :
-    [
-        {
-            grant :
-            [
-                '*'
-            ],
-            to :
-            [
-                'User'
-            ]
-        }
+    annotate Customers with @restrict : [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
+
+    annotate Orders with @restrict : [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
+
+    annotate OrderItems with @restrict : [
+        { grant : [ '*' ], to : [ 'Admin' ] },
+        { grant : [ 'READ', 'CREATE' ], to : [ 'User' ] }
+    ];
+
+    annotate Orders with @Aggregation.ApplySupported : {
+        $Type : 'Aggregation.ApplySupportedType',
+        GroupableProperties : [
+            totalAmount,
+            totalOrders,
+            monthlyRevenue
+        ],
+        AggregatableProperties : [
+            {
+                Property : totalAmount,
+                SupportedAggregationMethods : [
+                    'average'
+                ]
+            }
+        ]
+    };
+
+    @restrict : [
+        { grant : [ '*' ], to : [ 'User' ] }
     ]
     action cancelOrder
     (
@@ -77,18 +59,8 @@ service OrderManagementService @(path: '/odata/v4/order-management') {
     )
     returns Boolean;
 
-    @restrict :
-    [
-        {
-            grant :
-            [
-                '*'
-            ],
-            to :
-            [
-                'User'
-            ]
-        }
+    @restrict : [
+        { grant : [ '*' ], to : [ 'User' ] }
     ]
     action submitOrder
     (
@@ -96,18 +68,8 @@ service OrderManagementService @(path: '/odata/v4/order-management') {
     )
     returns Boolean;
 
-    @restrict :
-    [
-        {
-            grant :
-            [
-                '*'
-            ],
-            to :
-            [
-                'Admin'
-            ]
-        }
+    @restrict : [
+        { grant : [ '*' ], to : [ 'Admin' ] }
     ]
     action acceptOrder
     (
